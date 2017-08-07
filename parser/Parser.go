@@ -90,7 +90,7 @@ func (parser Parser) ParsePage(url string) {
 
 	for _, val := range urls {
 		if !parser.MapURL.CheckURL(val) {
-			parser.ParsePage(val)
+			go parser.ParsePage(val)
 		}
 	}
 }

@@ -5,6 +5,13 @@
     <title>Title</title>
 </head>
 <body>
-
+<script>
+    var x = new XMLHttpRequest();
+    x.open("GET", "/getContent", true);
+    x.onload = function (){
+        alert( x.responseText);
+    }
+    x.send(null);
+</script>
 </body>
 </html>

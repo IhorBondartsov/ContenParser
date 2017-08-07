@@ -36,8 +36,8 @@ func (server *HTTPServer) Run() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/getContent", server.getContentHandler).Methods(http.MethodGet)
-	r.HandleFunc("/getArticle", server.getArticleHandler).Methods(http.MethodGet)
-	r.HandleFunc("/getContent", server.getContentHandler).Methods(http.MethodGet)
+	//r.HandleFunc("/getArticle", server.getArticleHandler).Methods(http.MethodGet)
+	//r.HandleFunc("/getContent", server.getContentHandler).Methods(http.MethodGet)
 
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("../view/")))
 
@@ -54,3 +54,4 @@ func (server *HTTPServer) Run() {
 
 	go log.Fatal(srv.ListenAndServe())
 }
+
