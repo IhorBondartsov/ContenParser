@@ -11,7 +11,6 @@ import (
 	. "github.com/IhorBondartsov/ContentParser/models"
 	"github.com/IhorBondartsov/ContentParser/dao/daoInterface"
 	"github.com/IhorBondartsov/ContentParser/dao/implementation"
-	"fmt"
 )
 
 type Parser struct {
@@ -56,15 +55,13 @@ func (parser *Parser) ReadConfigFile(fileName string) ([]string, error) {
 	file := bytes.NewBuffer(b).String()
 	arrayUrl := strings.Split(file, "\n")
 
-	var newUrl []string
-
-	for _, val := range arrayUrl {
+	for key, val := range arrayUrl {
 		val = strings.Replace(val, "\r", "", 1)
-		newUrl = append(newUrl, val)
+		arrayUrl[key]= val
 	}
 
 	log.Info("Config file was read")
-	return newUrl, nil
+	return arrayUrl, nil
 }
 
 func (parser Parser) ParsePage(url string) {
@@ -81,13 +78,11 @@ func (parser Parser) ParsePage(url string) {
 	}
 
 	urls := parser.ParseUrls(doc)
-	if urls != nil {
-		urls = []string{}
-	}
+	log.Info(urls)
 
 	content := parser.SelectCMS(doc)
 
-	log.Info("ParsePage2. URL:", url, ". Content was Parsed")
+	log.Info("ParsePage. Content was Parsed.  URL:", url, ".")
 
 	parser.MapURL.AddURL(url)
 
@@ -95,7 +90,6 @@ func (parser Parser) ParsePage(url string) {
 
 	for _, val := range urls {
 		if !parser.MapURL.CheckURL(val) {
-
 			parser.ParsePage(val)
 		}
 	}
