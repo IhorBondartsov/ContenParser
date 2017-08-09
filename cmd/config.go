@@ -8,5 +8,6 @@ var(
 	NameDB string = "parser"
 
 
-	httpPort string = "8100"
+	httpPort int32 = 8100
+	httpHost string = "0.0.0.0"
 )

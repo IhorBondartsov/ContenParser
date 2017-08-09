@@ -5,24 +5,23 @@ import (
 	"fmt"
 	"time"
 	"github.com/gorilla/handlers"
-	"github.com/IhorBondartsov/ContentParser/dao/daoInterface"
+	"github.com/IhorBondartsov/ContenParser/dao/daoInterface"
 	log "github.com/Sirupsen/logrus"
 	"net/http"
+	"encoding/json"
 )
 
 type HTTPServer struct {
-	Port     int32
-	Host     string
-	StopProg chan struct{}
-	DB       daoInterface.DAOInterface
+	Port int32
+	Host string
+	DB   daoInterface.DAOInterface
 }
 
-func NewHTTPServer(port int32, host string, stop chan struct{}) *HTTPServer {
+func NewHTTPServer(port int32, host string, dbClient daoInterface.DAOInterface) *HTTPServer {
 	return &HTTPServer{
-		Port:     port,
-		Host:     host,
-		StopProg: stop,
-
+		Port: port,
+		Host: host,
+		DB:   dbClient,
 	}
 }
 
@@ -30,9 +29,10 @@ func (server *HTTPServer) Run() {
 	defer func() {
 		if r := recover(); r != nil {
 			log.Error("HTTPServer Failed")
-			server.StopProg <- struct{}{}
 		}
 	}()
+
+	server.DB.Init()
 
 	r := mux.NewRouter()
 	r.HandleFunc("/getContent", server.getContentHandler).Methods(http.MethodGet)
@@ -55,3 +55,14 @@ func (server *HTTPServer) Run() {
 	go log.Fatal(srv.ListenAndServe())
 }
 
+// return all content which have in data base
+func (server *HTTPServer) getContentHandler(w http.ResponseWriter, r *http.Request) {
+	urls, err := server.DB.GetAllURL()
+
+	if err != nil {
+		http.Error(w, "Problems with Data Base", 500)
+		return
+	}
+
+	err = json.NewEncoder(w).Encode(urls)
+}

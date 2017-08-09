@@ -5,4 +5,6 @@ type DAOInterface interface {
 	Close()
 
 	SaveConten(url, content string)
+
+	GetAllURL()([]string, error)
 }

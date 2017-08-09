@@ -3,7 +3,7 @@ package implementation
 import (
 	_ "github.com/go-sql-driver/mysql"
 	"database/sql"
-	"github.com/IhorBondartsov/ContentParser/dao/daoInterface"
+	"github.com/IhorBondartsov/ContenParser/dao/daoInterface"
 	"github.com/Sirupsen/logrus"
 )
 
@@ -38,7 +38,7 @@ func (base *SQL) Close() {
 	base.DB.Close()
 }
 
-func (base *SQL) SaveConten(url, content string)  {
+func (base *SQL) SaveConten(url, content string) {
 
 	rows, err := base.DB.Query("INSERT INTO "+tableContent+" VALUES (?,?);", url, content)
 	if err != nil {
@@ -47,4 +47,27 @@ func (base *SQL) SaveConten(url, content string)  {
 	}
 	defer rows.Close()
 
+}
+
+func (base *SQL) GetAllURL() ([]string, error) {
+	var urls []string
+
+	rows, err := base.DB.Query("SELECT url FROM " + tableContent)
+	if err != nil {
+		logrus.Error("Some problems in SaveContent method ", err)
+		return nil, err
+	}
+
+	for rows.Next() {
+		var url string
+		err = rows.Scan(&url)
+		if err != nil {
+			logrus.Error("Cant read row")
+		}
+
+		urls = append(urls, url)
+	}
+	defer rows.Close()
+
+	return urls, nil
 }

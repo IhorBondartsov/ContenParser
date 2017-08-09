@@ -8,9 +8,8 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 
-	. "github.com/IhorBondartsov/ContentParser/models"
-	"github.com/IhorBondartsov/ContentParser/dao/daoInterface"
-	"github.com/IhorBondartsov/ContentParser/dao/implementation"
+	. "github.com/IhorBondartsov/ContenParser/models"
+	"github.com/IhorBondartsov/ContenParser/dao/daoInterface"
 )
 
 type Parser struct {
@@ -27,10 +26,9 @@ func (parser *Parser) Init() {
 
 }
 
-func (parser *Parser) Connect(basePassword, baseURI, baseUser, baseTypeConn, NameDB string) *Parser {
+func (parser *Parser) Connect(dbClient daoInterface.DAOInterface) *Parser {
 	parser.Init()
-	parser.DB = &implementation.SQL{Password: basePassword, URI: baseURI,
-		User:                                 baseUser, TypeConn: baseTypeConn, NameDB: NameDB}
+	parser.DB = dbClient
 	return parser
 }
 
